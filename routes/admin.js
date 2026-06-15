@@ -9,56 +9,56 @@ const { AdminModel, CourseModel } = require("../db")
 const { adminMiddleware } = require("../middleware/admin")
 const course = require("./course")
 
-// adminRouter.post("/signup", async (req, res) => {
-//     const requiredBody = z.object({
-//         email: z.string().min(3).max(100).email(),
-//         password: z.string().min(3).max(30).regex(
-//             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-//             {
-//                 message:
-//                     "Password must contain 1 uppercase, 1 lowercase, 1 number and 1 special character"
-//             }
-//         ),
-//         firstName: z.string().min(3).max(30),
-//         lastName: z.string().min(3).max(30)
-//     }).strict()
+adminRouter.post("/signup", async (req, res) => {
+    const requiredBody = z.object({
+        email: z.string().min(3).max(100).email(),
+        password: z.string().min(3).max(30).regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+            {
+                message:
+                    "Password must contain 1 uppercase, 1 lowercase, 1 number and 1 special character"
+            }
+        ),
+        firstName: z.string().min(3).max(30),
+        lastName: z.string().min(3).max(30)
+    }).strict()
 
-//     const parsedDataWithSuccess = requiredBody.safeParse(req.body)
+    const parsedDataWithSuccess = requiredBody.safeParse(req.body)
 
-//     if (!parsedDataWithSuccess.success) {
-//         return res.json({
-//             message: "Incorrect form",
-//             error: parsedDataWithSuccess.error
-//         })
-//     }
+    if (!parsedDataWithSuccess.success) {
+        return res.json({
+            message: "Incorrect form",
+            error: parsedDataWithSuccess.error
+        })
+    }
 
-//     const { email, password, firstName, lastName } = req.body
+    const { email, password, firstName, lastName } = req.body
 
-//     let errorThrown = false
+    let errorThrown = false
 
-//     try {
-//         const hashedPassword = await bcrypt.hash(password, 10)
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10)
 
-//         await AdminModel.create({
-//             email: email,
-//             password: hashedPassword,
-//             firstName: firstName,
-//             lastName: lastName
-//         })
-//     } catch (e) {
-//         res.status(400).json({
-//             message: "User with email already exits"
-//         })
+        await AdminModel.create({
+            email: email,
+            password: hashedPassword,
+            firstName: firstName,
+            lastName: lastName
+        })
+    } catch (e) {
+        res.status(400).json({
+            message: "User with email already exits"
+        })
 
-//         errorThrown = true
-//     }
+        errorThrown = true
+    }
 
-//     if (!errorThrown) {
-//         res.json({
-//             message: "Admin signup endpoint"
-//         })
-//     }
-// })
+    if (!errorThrown) {
+        res.json({
+            message: "Admin signup endpoint"
+        })
+    }
+})
 
 adminRouter.post("/signin", async (req, res) => {
     const requiredBody = z.object({
