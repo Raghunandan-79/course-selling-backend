@@ -3,7 +3,8 @@ const { Router } = require("express")
 const { z } = require("zod")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const { UserModel } = require("../db")
+const { userMiddleware } = require("../middleware/user")
+const { UserModel, PurchaseModel } = require("../db")
 const JWT_USER_SECRET = process.env.JWT_USER_SECRET
 const userRouter = Router()
 
@@ -102,10 +103,16 @@ userRouter.post("/signin", async (req, res) => {
     }
 })
 
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchases", userMiddleware, async (req, res) => {
+    const userId = req.userId
+
+    const courses = await PurchaseModel.find({
+        userId
+    })
+
 
     res.json({
-        message: "Purchased courses endpoint"
+        courses
     })
 })
 
