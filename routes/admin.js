@@ -151,8 +151,6 @@ adminRouter.get("/course/bulk", adminMiddleware, async (req, res) => {
         creatorId: adminId
     })
 
-    console.log(courses)
-
     res.json({
         message: "Your courses",
         courses
