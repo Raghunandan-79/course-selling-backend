@@ -1,4 +1,7 @@
+require("dotenv").config()
 const express = require("express")
+const mongoose = require("mongoose")
+
 const { userRouter } = require("./routes/user")
 const { courseRouter } = require("./routes/course")
 const { adminRouter } = require("./routes/admin")
@@ -10,6 +13,15 @@ app.use("/api/v1/user", userRouter)
 app.use("/api/v1/admin", adminRouter)
 app.use("/api/v1/course", courseRouter)
 
-app.listen(3000, () => {
-    console.log("App is running on port 3000")
-})
+async function main() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI)
+        app.listen(3000, () => {
+            console.log("App is running on port 3000")
+        })
+    } catch(e) {
+        console.log("Not able to connect to mongo DB")
+    }
+}
+
+main()
