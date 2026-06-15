@@ -5,7 +5,9 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const JWT_ADMIN_SECRET = process.env.JWT_ADMIN_SECRET
 const adminRouter = Router()
-const { AdminModel } = require("../db")
+const { AdminModel, CourseModel } = require("../db")
+const { adminMiddleware } = require("../middleware/admin")
+const course = require("./course")
 
 // adminRouter.post("/signup", async (req, res) => {
 //     const requiredBody = z.object({
@@ -102,14 +104,26 @@ adminRouter.post("/signin", async (req, res) => {
     }
 })
 
-adminRouter.post("/", (req, res) => {
+adminRouter.post("/course", adminMiddleware, async (req, res) => {
+    const adminId = req.userId
+
+    const { title, description, price, imageUrl} = req.body
+
+    await CourseModel.create({
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+        creatorId: adminId
+    })
 
     res.json({
-        message: "Add course endpoint"
+        message: "Course created",
+        courseId: course._id
     })
 })
 
-adminRouter.put("/", (req, res) => {
+adminRouter.put("/course", (req, res) => {
 
     res.json({
         message: "update course endpoint"
